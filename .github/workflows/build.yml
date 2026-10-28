@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Compile C++ Code
-        run: g++ full_implementation.cpp -o exec.exe
+        run: g++ -static full_implementation.cpp -o exec.exe
       - name: Upload EXE Artifact
         uses: actions/upload-artifact@v4
         with:
