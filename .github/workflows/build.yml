@@ -1,0 +1,14 @@
+name: Build Windows EXE
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile C++ Code
+        run: g++ full_implementation.cpp -o exec.exe
+      - name: Upload EXE Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-executable
+          path: exec.exe
