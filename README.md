@@ -24,7 +24,6 @@ This project replaces the AST-based workflow with an integrated, single-pass pip
 - **Syntax-Directed Translation (SDT):** Semantic actions are embedded directly into production rules during predictive recursive descent parsing, emitting TAC quadruples on the fly[cite: 2, 3].
 - **Backpatching Mechanism:** Eliminates forward-reference issues by emitting branch instructions with placeholder addresses and asynchronously filling in real addresses once targets are encountered.
 - **Control-Flow Boolean Representation:** Compound conditions are treated as control-flow steering paths using `truelist` and `falselist` arrays rather than evaluating numeric truth flags (`0` or `1`) into temporary registers.
-- **Control-Flow Optimizer:** A post-emission cleanup pass removes redundant jumps and collapses jump chains into compact basic blocks.
 
 ---
 
@@ -50,31 +49,3 @@ BoolTerm      -> BoolFactor (&& BoolFactor)*
 BoolFactor    -> ! BoolFactor | ( BoolExpr ) | Expr RelOp Expr
 RelOp         -> < | <= | > | >= | == | !=
 ```
-## 4. System Pipeline Flow
-Source Code (if-else scripts)
-            │
-            ▼
-┌──────────────────────────────┐
-│       Lexical Analyzer       │ ──► Generates tokens, strips whitespace/newlines, tracks line numbers[cite: 1, 2, 4]
-└──────────────────────────────┘
-            │
-            ▼ Token Stream
-┌──────────────────────────────┐
-│   Recursive Descent Parser   │ ──► Validates CFG syntax, enforces operator precedence[cite: 2, 4]
-└──────────────────────────────┘
-            │
-            ▼ Syntax-Directed Translation (SDT)
-┌──────────────────────────────┐
-│     Backpatching Engine      │ ──► Maintains truelist, falselist, nextlist
-│                              │ ──► Emits TAC with placeholder jump targets
-│                              │ ──► makelist(), merge(), backpatch() resolve addresses
-└──────────────────────────────┘
-            │
-            ▼ Raw TAC Quadruples
-┌──────────────────────────────┐
-│    Control-Flow Optimizer    │ ──► Eliminates goto-to-goto chains & fall-through branches
-└──────────────────────────────┘
-            │
-            ▼
-Optimized Three-Address Code (TAC)
-
